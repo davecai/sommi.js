@@ -1,0 +1,390 @@
+!function() {
+	/******** architecture  part*********/
+	var globalObj = this;
+	var originalS = globalObj.S;
+
+	function Sommi(obj) {
+		this.primitiveObj = obj;
+	}
+	var S = globalObj.S = function(obj) {
+		return new Sommi(obj);
+	}
+	S.version = "0.1.0";
+	/*******************Internal functions*************/
+	var isArrayLike = function(obj) {
+		var len = obj.length;
+		return typeof len === 'number' && len >= 0;
+	}
+
+
+	/**************Collection functions**************/
+	S.each = function(collection, fn, thisArg) {
+		//try-catch used for breaking loop
+		try {
+			if (isArrayLike(collection)) {
+				if (collection.forEach) {
+					collection.forEach(fn, thisArg);
+				} else {
+					for (var i = 0, len = collection.length; i < len; i++) {
+						fn.call(thisArg, collection[i], i, collection);
+					}
+				}
+			} else {
+				for (var key in collection) {
+					if (collection.hasOwnProperty(key)) {
+						fn.call(thisArg, collection[key], key, collection);
+					}
+				}
+			}
+		} catch (error) {
+			if (error !== "break") {
+				throw error;
+			}
+		}
+
+	};
+
+	S.map = function(collection, fn, thisArg) {
+		if (collection.map) {
+			return collection.map(fn, thisArg);
+		}
+		var result = new Array();
+		S.each(collection, function(value, index, obj) {
+			result.push(fn.call(thisArg, value, index, obj));
+		}, thisArg);
+		return result;
+	};
+
+//A convenient version of what is perhaps the most common use-case 
+//for map: extracting a list of property values. 
+S.pluck=function(collection,key){
+	return S.map(collection,function(value){
+		return value[key];
+	});
+};
+
+	S.reduce = function(collection, memoValue, fn, thisArg) {
+		if (collection.reduce) {
+			return collection.reduce(S.bind(fn, thisArg), memoValue);
+		}
+		S.each(collection, function(value, index, obj) {
+			memoValue = fn.call(thisArg, memoValue, value, index, obj);
+		});
+		return memoValue;
+	};
+
+	S.reduceRight = function(collection, memoValue, fn, thisArg) {
+		if (collection.reduceRight) {
+			return collection.reduceRight(_.bind(fn, thisArg), memoValue);
+		}
+		var list = S.toArray(collection).reverse();
+		return S.reduce(list, memoValue, fn, thisArg);
+	};
+
+	S.find = function(collection, fn, thisArg) {
+		var result;
+		S.each(collection, function(value, index, obj) {
+			if (fn.call(thisArg, value, index, obj)) {
+				result = value;
+				S.breakLoop();
+			}
+		});
+		return result;
+	};
+
+	S.filter=function(collection,fn,thisArg){
+		if(collection.filter){
+			return collection.filter(fn,thisArg);
+		}
+		var result=new Array();
+		S.each(collection,function(value,index,obj){
+			fn.call(thisArg,value,index,obj)&&result.push(value);
+		});
+		return result;
+	};
+
+// Return all the values that don't pass the truth test.
+	S.reject=function(collection,fn,thisArg){
+		var result=new Array();
+		S.each(collection,function(value,index,obj){
+			!fn.call(thisArg,value,index,obj)&&result.push(value);
+		});
+		return result;
+	};
+
+//Determin whether all the values in the collection pass the truth test
+	S.every=function(collection,fn,thisArg){
+		if(collection.every){
+			return collection.every(fn,thisArg);
+		}
+		var booleanResult=true;
+		S.each(collection,function(value,index,obj){
+			if(!fn.call(thisArg,value,index,obj)){
+				booleanResult=false;
+				S.breakLoop();
+			}
+		});
+		return booleanResult;
+	};
+
+// Determine whether at least one value in the collection passes a truth test.
+	S.some=function(collection,fn,thisArg){
+		if(collection.some){
+			return collection.some(fn,thisArg);
+		}
+		var booleanResult=false;
+		S.each(collection,function(value,index,obj){
+			if(fn.call(thisArg,value,index,obj)){
+				booleanResult=true;
+				S.breakLoop();
+			}
+		});
+		return booleanResult;
+	};
+
+// Determine if a given value is included in the collection
+	S.contains=function(collection,target){
+		if(S.isArray(collection)) {
+			return collection.indexOf(target) !== -1;
+		}
+		var booleanResult=false;
+		S.each(collection,function(value,index,obj){
+			if(booleanResult= value===target){
+				S.breakLoop();
+			}
+		});
+		return booleanResult;
+	};
+
+// Return the maximum item or (item-based computation)
+	S.max=function(collection,fn,thisArg){
+		if(!fn && S.isArray(collection)){
+			return Math.max.apply(Math,collection);
+		}
+		var result={computed:-Infinity};
+		S.each(collection,function(value,index,obj){
+			var computed=fn?fn.call(thisArg,value,index,obj):value;
+			computed>result.computed&&(result={computed:computed,value:value});
+		});
+		return result.value;
+};
+
+// Return the minimum item (or item-based computation).
+	S.min=function(collection,fn,thisArg){
+		if(!fn&&S.isArray(collection)){
+			return Math.min.apply(Math,collection);
+		}
+		var result= {computed : Infinity};
+		S.each(collection,function(value,index,obj){
+			var computed=fn?fn.call(thisArg,value,index,obj):value;
+			computed<result.computed&&(result = {value : value, computed : computed});
+		});
+		return result.value;
+	};
+
+// Sort the collection's values by a criteria produced by a function
+ 	S.sortBy=function(collection,fn,thisArg){
+ 		var temp=S.map(collection,function(value,index,obj){
+ 			return {
+ 				value:value,
+ 				criteria:fn.call(thisArg,value,index,obj)
+ 			};
+ 		}).sort(function(left,right){
+ 			var a=left.criteria,b=right.criteria;
+ 			return a<b?-1:a>b?1:0;
+ 		});
+ 		return S.map(temp,function(value,index,obj){
+ 			return value.criteria;
+ 		});
+ 	};
+
+// Convert anything iterable into a array
+	S.toArray = function(collection) {
+		if (!collection) return [];
+		else if (S.isArray(collection)) {
+			return collection;
+		}
+		return S.map(collection, function(value) {
+			return value;
+		});
+	};
+
+// Return the number of values in an collection
+	S.size=function(collection){
+		return S.toArray(collection).length;
+	};
+
+/*****************Array functions********************/
+// Return a completely flattened version of an array
+	S.flatten=function(array){
+		return S.reduce(array,[],function(memo,currentValue){
+			if(S.isArray(currentValue)){
+				return memo.concat(S.flatten(currentValue));
+			}
+			memo.push(currentValue);
+			return memo;
+		});
+	};
+
+// Return a version of the array that does not contain the specified value(s).
+	S.without=function(array){
+		var removed=Array.prototype.slice.call(arguments,1);
+		return S.filter(array,function(value){
+			return !S.contains(removed,value);
+		});
+	};
+
+// Produce a duplicate-free version of the array. If the array has already
+// been sorted, you have the option of using a faster algorithm
+	S.unique=function(array,isSorted){
+		return S.reduce(array,[],function(memo,currentValue,index){
+			if(index===0||(isSorted?memo[memo.length-1]!==currentValue:!S.contains(memo,currentValue))) {
+				memo.push(currentValue);
+			}
+			return memo;
+		});
+	};
+
+// Produce an array that contains every item shared between all the
+// passed-in arrays.
+	S.intersect=function(array){
+		var rest=S.toArray(arguments).slice(1);
+		var result=new Array();
+		S.each(S.unique(array),function(value,index){
+			S.every(rest,function(v){
+				return S.indexOf(v,value)>-1;
+			}) && result.push(value);
+		});
+		return result;
+	};
+
+//_.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
+//=> [["moe", 30, true], ["larry", 40, false], ["curly", 50, false]]
+	S.zip=function(){
+		var args=S.toArray(arguments);
+		var length=S.max(S.pluck(args,"length"));
+		var	result=new Array(length);
+		for(var i=0;i<length;i++){
+			result[i]=S.pluck(args,String(i));
+		}
+		return result;
+	};
+
+//IE8 and previous versions don't support Array.prototype.indexOf
+	S.indexOf=function(array,value){
+		if(array.indexOf){
+			return array.indexOf(value);
+		}
+		for(var i=0,len=array.length;i<len;i++){
+			if(array[i]===value) return i;
+		}
+		return -1;
+	};
+
+	S.lastIndexOf=function(array,value){
+		if(array.lastIndexOf){
+			return array.lastIndexOf(value);
+		}
+		var index=array.length;
+		while(index--){
+			if(array[index]===value) return index;
+		}
+		return -1;
+	};
+/*****************Object functions*******************/
+	S.keys=function(obj){
+		return S.map(obj,function(value,key){
+			return key;
+		});
+	};
+
+	S.values=function(obj){
+		return S.map(obj,function(value,key){
+			return value;
+		});
+	};
+	
+// Create a (shallow-cloned) duplicate of an object
+	S.clone=function(obj){
+		if(S.isArray(obj)) return obj.slice(0);
+		return S.extend({},obj);
+	};
+	
+// Extend a given object with all of the properties in a source object.
+	S.extend=function(target,source){
+		for(var key in source){
+			target[key]=source[key];
+		}
+		return target;
+	};
+// Perform a deep comparison to check if two objects are equal,
+//using recursive function
+	S.isEqual=function(a,b){
+		if(a===b) return true;
+		var aType=typeof a,
+			bType=typeof b;
+		if(aType !==bType) return false;
+		if(aType !=="object") return false;
+		var aKeys=S.keys(a),bKeys=S.keys(b);
+		if(aKeys.length!==bKeys.length) return false;
+		for(var key in a){
+			if(!S.isEqual(a[key],b[key]))  return false;
+		}
+		return true;
+	};
+
+	S.isArray = function(obj) {
+		return Object.prototype.toString.apply(obj) === "[object Array]";
+	};
+
+	S.isFunction=function(obj){
+		return Object.prototype.toString.apply(obj)==="[object Function]";
+	};
+
+	S.isElement=function(obj){
+		return !!(obj&&obj.nodeType===1);
+	};
+
+/******************Function functions*****************/
+	S.bind = function(fn, thisArg) {
+		var args = S.toArray(arguments).slice(2);
+		if (fn.bind) {
+			return fn.bind.apply(fn, [thisArg].concat(args));
+		}
+		return function() {
+			var finalArgs = args.concat(S.toArray(arguments));
+			return fn.apply(thisArg, finalArgs);
+		};
+	};
+
+//defers a function until all other tasks completed
+	S.defer=function(fn){
+		var args=S.toArray(arguments).slice(1);
+		return setTimeout(function(){
+			return fn.apply(null,args);
+		},0);
+	};
+
+/********************Utility functions******************/
+	S.breakLoop=function(){
+		throw "break";
+	};
+
+	S.noConflict=function(){
+		globalObj.S=originalS;
+		return this;
+	};
+
+// Return a sorted list of the function names available in sommi.js
+	S.allFunctions=function(){
+		var result=new Array();
+		for(var key in S){
+			if(Object.prototype.hasOwnProperty.call(S,key)){
+				result.push(key);
+			}
+		}
+		return S.without(result,"version","prototype").sort();
+	};
+
+
+}.call(this);
