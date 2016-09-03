@@ -386,5 +386,27 @@ S.pluck=function(collection,key){
 		return S.without(result,"version","prototype").sort();
 	};
 
+/******************Support OOP style invocation******************/
+//add all of the sommi.js functions to the instance of Sommi
+	S.each(S.allFunctions(),function(name){
+		Sommi.prototype[name]=function(){
+			Array.prototype.unshift.call(arguments,this.primitiveObj);
+			var result=S[name].apply(S,arguments);
+			return this.chainable? S(result).chain():result;
+		};
+
+//make the return result chainable	
+		Sommi.prototype.chain=function(){
+			this.chainable=true;
+			return this;
+		};
+
+//get the result from the chained instance
+		Sommi.prototype.get=function(){
+			return this.primitiveObj;
+		};
+	});
+
+
 
 }.call(this);
