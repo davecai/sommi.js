@@ -402,7 +402,7 @@ S.pluck=function(collection,key){
 		};
 
 //get the result from the chained instance
-		Sommi.prototype.get=function(){
+		Sommi.prototype.value=function(){
 			return this.primitiveObj;
 		};
 	});
