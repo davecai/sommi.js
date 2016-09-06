@@ -9,6 +9,10 @@
 	var S = globalObj.S = function(obj) {
 		return new Sommi(obj);
 	}
+
+//export the S object for CommonJS
+	if(typeof exports!=="undefined") exports.S=S;
+	
 	S.version = "0.1.0";
 	/*******************Internal functions*************/
 	var isArrayLike = function(obj) {
