@@ -348,6 +348,14 @@ S.pluck=function(collection,key){
 	S.isElement=function(obj){
 		return !!(obj&&obj.nodeType===1);
 	};
+	
+	S.isString=function(obj){
+		return Object.prototype.toString.call(obj)==="[object String]";
+	};
+
+	S.isNumber=function(){
+		return Object.prototype.toString.call(obj)==="[object Number]";
+	};
 
 /******************Function functions*****************/
 	S.bind = function(fn, thisArg) {
