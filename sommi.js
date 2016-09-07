@@ -34,10 +34,9 @@
 					}
 				}
 			} else {
-				for (var key in collection) {
-					if (collection.hasOwnProperty(key)) {
-						fn.call(thisArg, collection[key], key, collection);
-					}
+				var keys=S.keys(collection),len=keys.length;
+				for (var i=0;i<len;i++) {
+					fn.call(thisArg, collection[keys[i]], keys[i], collection);
 				}
 			}
 		} catch (error) {
@@ -297,9 +296,20 @@ S.pluck=function(collection,key){
 	};
 /*****************Object functions*******************/
 	S.keys=function(obj){
-		return S.map(obj,function(value,key){
-			return key;
-		});
+		var result=new Array();
+		if(S.isArray(obj)){
+			var i,len=obj.length;
+			for(i=0;i<len;i++){
+				result.push(i);
+			}
+			return result;
+		}
+		for(var key in obj){
+			if(Object.prototype.hasOwnProperty.call(obj,key)){
+					result.push(key);
+			}
+		}
+		return result;
 	};
 
 	S.values=function(obj){
