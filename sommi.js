@@ -338,6 +338,7 @@ S.pluck=function(collection,key){
 		var aType=typeof a,
 			bType=typeof b;
 		if(aType !==bType) return false;
+		if(S.isDate(a)&&S.isDate(b)) return a.getTime()===b.getTime();
 		if(aType !=="object") return false;
 		var aKeys=S.keys(a),bKeys=S.keys(b);
 		if(aKeys.length!==bKeys.length) return false;
@@ -363,8 +364,25 @@ S.pluck=function(collection,key){
 		return Object.prototype.toString.call(obj)==="[object String]";
 	};
 
-	S.isNumber=function(){
+	S.isNumber=function(obj){
 		return Object.prototype.toString.call(obj)==="[object Number]";
+	};
+	
+	S.isNull=function(obj){
+		//attention:the result of typeof null is object
+		return obj===null;
+	};
+
+	S.isUndefined=function(obj){
+		return typeof obj==="undefined";
+	};
+
+	S.isDate=function(obj){
+		return Object.prototype.toString.call(obj)==="[object Date]";
+	};
+
+	S.isNaN=function(obj){
+		return S.isNumber(obj)&&isNaN(obj);
 	};
 
 /******************Function functions*****************/
@@ -399,13 +417,7 @@ S.pluck=function(collection,key){
 
 // Return a sorted list of the function names available in sommi.js
 	S.allFunctions=function(){
-		var result=new Array();
-		for(var key in S){
-			if(Object.prototype.hasOwnProperty.call(S,key)){
-				result.push(key);
-			}
-		}
-		return S.without(result,"version","prototype").sort();
+		return S.without(S.keys(S),"version","prototype").sort();
 	};
 
 /******************Support OOP style invocation******************/
