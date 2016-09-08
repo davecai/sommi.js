@@ -415,14 +415,16 @@ S.pluck=function(collection,key){
 		return this;
 	};
 
-// Return a sorted list of the function names available in sommi.js
-	S.allFunctions=function(){
-		return S.without(S.keys(S),"version","prototype").sort();
+// Return a sorted list of the function names available in obj
+	S.allFunctions=function(obj){
+		return  S.filter(S.keys(obj),function(value){
+					return S.isFunction(obj[value]);
+			}).sort();
 	};
 
 /******************Support OOP style invocation******************/
 //add all of the sommi.js functions to the instance of Sommi
-	S.each(S.allFunctions(),function(name){
+	S.each(S.allFunctions(S),function(name){
 		Sommi.prototype[name]=function(){
 			Array.prototype.unshift.call(arguments,this.primitiveObj);
 			var result=S[name].apply(S,arguments);
