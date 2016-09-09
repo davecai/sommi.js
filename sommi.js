@@ -338,7 +338,15 @@ S.pluck=function(collection,key){
 		var aType=typeof a,
 			bType=typeof b;
 		if(aType !==bType) return false;
+		// Compate Date object
 		if(S.isDate(a)&&S.isDate(b)) return a.getTime()===b.getTime();
+		// Compare regular expressions.
+		if(S.isRegExp(a)&&S.isRegExp(b)){
+			return  a.source===b.source &&
+				a.global===b.global &&
+				a.ignoreCase===b.ignoreCase &&
+				a.multiline===b.multiline;
+		}
 		if(aType !=="object") return false;
 		var aKeys=S.keys(a),bKeys=S.keys(b);
 		if(aKeys.length!==bKeys.length) return false;
@@ -348,24 +356,8 @@ S.pluck=function(collection,key){
 		return true;
 	};
 
-	S.isArray = function(obj) {
-		return Object.prototype.toString.apply(obj) === "[object Array]";
-	};
-
-	S.isFunction=function(obj){
-		return Object.prototype.toString.apply(obj)==="[object Function]";
-	};
-
 	S.isElement=function(obj){
 		return !!(obj&&obj.nodeType===1);
-	};
-	
-	S.isString=function(obj){
-		return Object.prototype.toString.call(obj)==="[object String]";
-	};
-
-	S.isNumber=function(obj){
-		return Object.prototype.toString.call(obj)==="[object Number]";
 	};
 	
 	S.isNull=function(obj){
@@ -377,14 +369,16 @@ S.pluck=function(collection,key){
 		return typeof obj==="undefined";
 	};
 
-	S.isDate=function(obj){
-		return Object.prototype.toString.call(obj)==="[object Date]";
-	};
-
 	S.isNaN=function(obj){
 		return S.isNumber(obj)&&isNaN(obj);
 	};
-
+	
+// Define the isArray, isDate, isFunction, isNumber, isRegExp, and isString functions
+	S.each(['String','Number','Array','Function','Date','RegExp'],function(type){
+		S['is'+type]=function(obj){
+			return Object.prototype.toString.call(obj)==="[object " + type + "]";
+		};
+	});
 /******************Function functions*****************/
 	S.bind = function(fn, thisArg) {
 		var args = S.toArray(arguments).slice(2);
