@@ -373,6 +373,13 @@ S.pluck=function(collection,key){
 		return S.isNumber(obj)&&isNaN(obj);
 	};
 	
+// Object.prototype.propertyIsEnumerable can determine whether the specified property in an object can be enumerated 
+//by a for...in loop, except the properties inherited through the prototype chain.
+//S.isArguments is used to determine whether the parameter is an arguments object
+	S.isArguments=function(obj){
+		return obj&&S.isNumber(obj.length)&&!S.isArray(obj) &&!Object.prototype.propertyIsEnumerable.call(obj,"length");
+	};
+	
 // Define the isArray, isDate, isFunction, isNumber, isRegExp, and isString functions
 	S.each(['String','Number','Array','Function','Date','RegExp'],function(type){
 		S['is'+type]=function(obj){
