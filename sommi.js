@@ -25,15 +25,14 @@
 	S.each = function(collection, fn, thisArg) {
 		//try-catch used for breaking loop
 		try {
-			if (isArrayLike(collection)) {
-				if (collection.forEach) {
-					collection.forEach(fn, thisArg);
-				} else {
-					for (var i = 0, len = collection.length; i < len; i++) {
-						fn.call(thisArg, collection[i], i, collection);
-					}
+			if (collection.forEach) {
+				collection.forEach(fn, thisArg);
+			} else if(S.isArray(collection)||S.isArguments(collection)) {
+				for (var i = 0, len = collection.length; i < len; i++) {
+					fn.call(thisArg, collection[i], i, collection);
 				}
-			} else {
+			}
+			else {
 				var keys=S.keys(collection),len=keys.length;
 				for (var i=0;i<len;i++) {
 					fn.call(thisArg, collection[keys[i]], keys[i], collection);
@@ -48,7 +47,7 @@
 	};
 
 	S.map = function(collection, fn, thisArg) {
-		if (collection.map) {
+		if (collection&&S.isFunction(collection.map)) {
 			return collection.map(fn, thisArg);
 		}
 		var result = new Array();
@@ -60,14 +59,14 @@
 
 //A convenient version of what is perhaps the most common use-case 
 //for map: extracting a list of property values. 
-S.pluck=function(collection,key){
-	return S.map(collection,function(value){
-		return value[key];
-	});
-};
+	S.pluck=function(collection,key){
+		return S.map(collection,function(value){
+			return value[key];
+		});
+	};
 
 	S.reduce = function(collection, memoValue, fn, thisArg) {
-		if (collection.reduce) {
+		if (collection&&S.isFunction(collection.reduce)) {
 			return collection.reduce(S.bind(fn, thisArg), memoValue);
 		}
 		S.each(collection, function(value, index, obj) {
@@ -77,7 +76,7 @@ S.pluck=function(collection,key){
 	};
 
 	S.reduceRight = function(collection, memoValue, fn, thisArg) {
-		if (collection.reduceRight) {
+		if (collection&&S.isFunction(collection.reduceRight)) {
 			return collection.reduceRight(_.bind(fn, thisArg), memoValue);
 		}
 		var list = S.toArray(collection).reverse();
@@ -96,7 +95,7 @@ S.pluck=function(collection,key){
 	};
 
 	S.filter=function(collection,fn,thisArg){
-		if(collection.filter){
+		if(collection&&S.isFunction(collection.filter)){
 			return collection.filter(fn,thisArg);
 		}
 		var result=new Array();
@@ -117,7 +116,7 @@ S.pluck=function(collection,key){
 
 //Determin whether all the values in the collection pass the truth test
 	S.every=function(collection,fn,thisArg){
-		if(collection.every){
+		if(collection&&S.isFunction(collection.every)){
 			return collection.every(fn,thisArg);
 		}
 		var booleanResult=true;
@@ -132,7 +131,7 @@ S.pluck=function(collection,key){
 
 // Determine whether at least one value in the collection passes a truth test.
 	S.some=function(collection,fn,thisArg){
-		if(collection.some){
+		if(collection&&S.isFunction(collection.some)){
 			return collection.some(fn,thisArg);
 		}
 		var booleanResult=false;
