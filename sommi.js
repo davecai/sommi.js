@@ -209,9 +209,7 @@
 		else if(S.isArguments(collection)){
 			return Array.prototype.slice.call(collection);
 		}
-		return S.map(collection, function(value) {
-			return value;
-		});
+		return S.values(collection);
 	};
 
 // Return the number of values in an collection
