@@ -27,7 +27,7 @@
 		try {
 			if (collection.forEach) {
 				collection.forEach(fn, thisArg);
-			} else if(S.isArray(collection)||S.isArguments(collection)) {
+			} else if(S.isNumber(collection.length)) {
 				for (var i = 0, len = collection.length; i < len; i++) {
 					fn.call(thisArg, collection[i], i, collection);
 				}
@@ -146,7 +146,7 @@
 
 // Determine if a given value is included in the collection
 	S.contains=function(collection,target){
-		if(S.isArray(collection)) {
+		if(collection&& _.isFunction(collection.indexOf)) {
 			return collection.indexOf(target) !== -1;
 		}
 		var booleanResult=false;
