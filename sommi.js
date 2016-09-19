@@ -384,7 +384,7 @@
 //by a for...in loop, except the properties inherited through the prototype chain.
 //S.isArguments is used to determine whether the parameter is an arguments object
 	S.isArguments=function(obj){
-		return obj&&S.isNumber(obj.length)&&!S.isArray(obj) &&!Object.prototype.propertyIsEnumerable.call(obj,"length");
+		return obj&&S.isNumber(obj.length)&&!S.isArray(obj) &&!S.isString(obj)&&!S.isFunction(obj)&&!Object.prototype.propertyIsEnumerable.call(obj,"length");
 	};
 	
 // Define the isArray, isDate, isFunction, isNumber, isRegExp, and isString functions
