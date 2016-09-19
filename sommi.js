@@ -206,6 +206,9 @@
 		else if (S.isArray(collection)) {
 			return collection;
 		}
+		else if(S.isArguments(collection)){
+			return Array.prototype.slice.call(collection);
+		}
 		return S.map(collection, function(value) {
 			return value;
 		});
@@ -240,7 +243,7 @@
 // been sorted, you have the option of using a faster algorithm
 	S.unique=function(array,isSorted){
 		return S.reduce(array,[],function(memo,currentValue,index){
-			if(index===0||(isSorted?memo[memo.length-1]!==currentValue:!S.contains(memo,currentValue))) {
+			if(index===0||(isSorted===true?memo[memo.length-1]!==currentValue:!S.contains(memo,currentValue))) {
 				memo.push(currentValue);
 			}
 			return memo;
@@ -312,9 +315,16 @@
 	};
 
 	S.values=function(obj){
-		return S.map(obj,function(value,key){
+		return S.map(obj,function(value){
 			return value;
 		});
+	};
+	
+// Return a sorted list of the function names available in obj
+	S.allFunctions=function(obj){
+		return  S.filter(S.keys(obj),function(value){
+					return S.isFunction(obj[value]);
+			}).sort();
 	};
 	
 // Create a (shallow-cloned) duplicate of an object
@@ -413,13 +423,6 @@
 	S.noConflict=function(){
 		globalObj.S=originalS;
 		return this;
-	};
-
-// Return a sorted list of the function names available in obj
-	S.allFunctions=function(obj){
-		return  S.filter(S.keys(obj),function(value){
-					return S.isFunction(obj[value]);
-			}).sort();
 	};
 
 /******************Support OOP style invocation******************/
