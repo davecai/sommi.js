@@ -47,7 +47,7 @@
 	};
 
 	S.map = function(collection, fn, thisArg) {
-		if (collection&&S.isFunction(collection.map)) {
+		if (Array.prototype.map&&collection.map===Array.prototype.map) {
 			return collection.map(fn, thisArg);
 		}
 		var result = new Array();
@@ -66,7 +66,7 @@
 	};
 
 	S.reduce = function(collection, memoValue, fn, thisArg) {
-		if (collection&&S.isFunction(collection.reduce)) {
+		if (Array.prototype.reduce&&collection.reduce===Array.prototype.reduce) {
 			return collection.reduce(S.bind(fn, thisArg), memoValue);
 		}
 		S.each(collection, function(value, index, obj) {
@@ -76,7 +76,7 @@
 	};
 
 	S.reduceRight = function(collection, memoValue, fn, thisArg) {
-		if (collection&&S.isFunction(collection.reduceRight)) {
+		if (Array.prototype.reduceRight===collection.reduceRight===Array.prototype.reduceRight) {
 			return collection.reduceRight(_.bind(fn, thisArg), memoValue);
 		}
 		var list = S.toArray(collection).reverse();
