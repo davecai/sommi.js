@@ -25,7 +25,7 @@
 	S.each = function(collection, fn, thisArg) {
 		//try-catch used for breaking loop
 		try {
-			if (collection.forEach) {
+			if (Array.prototype.forEach&&collection.forEach===Array.prototype.forEach) {
 				collection.forEach(fn, thisArg);
 			} else if(S.isNumber(collection.length)) {
 				for (var i = 0, len = collection.length; i < len; i++) {
