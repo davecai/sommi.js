@@ -82,7 +82,8 @@
 		var list = S.toArray(collection).reverse();
 		return S.reduce(list, memoValue, fn, thisArg);
 	};
-
+	
+// Return the first value which passes a truth test.
 	S.find = function(collection, fn, thisArg) {
 		var result;
 		S.each(collection, function(value, index, obj) {
@@ -94,8 +95,9 @@
 		return result;
 	};
 
+// Return all the values that pass a truth test.
 	S.filter=function(collection,fn,thisArg){
-		if(collection&&S.isFunction(collection.filter)){
+		if(Array.prototype.filter&&collection.filter===Array.prototype.filter){
 			return collection.filter(fn,thisArg);
 		}
 		var result=new Array();
@@ -116,7 +118,7 @@
 
 //Determin whether all the values in the collection pass the truth test
 	S.every=function(collection,fn,thisArg){
-		if(collection&&S.isFunction(collection.every)){
+		if(Array.prototype.every&&collection.every===Array.prototype.every){
 			return collection.every(fn,thisArg);
 		}
 		var booleanResult=true;
@@ -131,7 +133,7 @@
 
 // Determine whether at least one value in the collection passes a truth test.
 	S.some=function(collection,fn,thisArg){
-		if(collection&&S.isFunction(collection.some)){
+		if(Array.prototype.some&&collection.some===Array.prototype.some){
 			return collection.some(fn,thisArg);
 		}
 		var booleanResult=false;
@@ -146,7 +148,7 @@
 
 // Determine if a given value is included in the collection
 	S.contains=function(collection,target){
-		if(collection&& _.isFunction(collection.indexOf)) {
+		if(Array.prototype.indexOf&&collection.indexOf===Array.prototype.indexOf) {
 			return collection.indexOf(target) !== -1;
 		}
 		var booleanResult=false;
