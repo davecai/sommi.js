@@ -389,8 +389,12 @@
 		return obj&&S.isNumber(obj.length)&&!S.isArray(obj) &&!S.isString(obj)&&!S.isFunction(obj)&&!Object.prototype.propertyIsEnumerable.call(obj,"length");
 	};
 	
-// Define the isArray, isDate, isFunction, isNumber, isRegExp, and isString functions
-	S.each(['String','Number','Array','Function','Date','RegExp'],function(type){
+	S.isArray=Array.isArray||function(obj){
+		return Object.prototype.toString.call(obj)==="[object Array]";
+	};
+	
+// Define the isDate, isFunction, isNumber, isRegExp, and isString functions
+	S.each(['String','Number','Function','Date','RegExp'],function(type){
 		S['is'+type]=function(obj){
 			return Object.prototype.toString.call(obj)==="[object " + type + "]";
 		};
