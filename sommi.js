@@ -277,7 +277,7 @@
 
 //IE8 and previous versions don't support Array.prototype.indexOf
 	S.indexOf=function(array,value){
-		if(array.indexOf){
+		if(Array.prototype.indexOf&&array.indexOf===Array.prototype.indexOf){
 			return array.indexOf(value);
 		}
 		for(var i=0,len=array.length;i<len;i++){
@@ -287,7 +287,7 @@
 	};
 
 	S.lastIndexOf=function(array,value){
-		if(array.lastIndexOf){
+		if(Array.prototype.lastIndexOf&&array.lastIndexOf===Array.prototype.lastIndexOf){
 			return array.lastIndexOf(value);
 		}
 		var index=array.length;
