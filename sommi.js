@@ -297,7 +297,7 @@
 		return -1;
 	};
 /*****************Object functions*******************/
-	S.keys=function(obj){
+	S.keys=Object.keys||function(obj){
 		var result=new Array();
 		if(S.isArray(obj)){
 			var i,len=obj.length;
