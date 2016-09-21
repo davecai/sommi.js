@@ -1,11 +1,8 @@
 !function() {
-	/******** architecture  part*********/
+	
+/*************architecture  part***************/
 	var globalObj = this;
 	var originalS = globalObj.S;
-
-	function Sommi(obj) {
-		this.primitiveObj = obj;
-	}
 	var S = globalObj.S = function(obj) {
 		return new Sommi(obj);
 	}
@@ -14,14 +11,15 @@
 	if(typeof exports!=="undefined") exports.S=S;
 	
 	S.version = "0.1.0";
-	/*******************Internal functions*************/
+	
+/*******************Internal functions*****************/
 	var isArrayLike = function(obj) {
 		var len = obj.length;
 		return typeof len === 'number' && len >= 0;
 	}
 
 
-	/**************Collection functions**************/
+/*****************Collection functions********************/
 	S.each = function(collection, fn, thisArg) {
 		//try-catch used for breaking loop
 		try {
@@ -296,6 +294,7 @@
 		}
 		return -1;
 	};
+	
 /*****************Object functions*******************/
 	S.keys=Object.keys||function(obj){
 		var result=new Array();
@@ -340,6 +339,7 @@
 		}
 		return target;
 	};
+	
 // Perform a deep comparison to check if two objects are equal,
 //using recursive function
 	S.isEqual=function(a,b){
@@ -399,6 +399,7 @@
 			return Object.prototype.toString.call(obj)==="[object " + type + "]";
 		};
 	});
+	
 /******************Function functions*****************/
 	S.bind = function(fn, thisArg) {
 		var args = S.toArray(arguments).slice(2);
@@ -430,6 +431,9 @@
 	};
 
 /******************Support OOP style invocation******************/
+	function Sommi(obj) {
+		this.primitiveObj = obj;
+	}
 //add all of the sommi.js functions to the instance of Sommi
 	S.each(S.allFunctions(S),function(name){
 		Sommi.prototype[name]=function(){
@@ -449,7 +453,5 @@
 			return this.primitiveObj;
 		};
 	});
-
-
 
 }.call(this);
