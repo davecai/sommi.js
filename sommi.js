@@ -332,12 +332,15 @@
 		return S.extend({},obj);
 	};
 	
-// Extend a given object with all of the properties in a source object.
-	S.extend=function(target,source){
-		for(var key in source){
-			target[key]=source[key];
-		}
-		return target;
+// Extend a given object with all of the properties in passed-in objects
+	S.extend=function(targetObj){
+		var args=S.toArray(arguments).slice(1);
+		S.each(args,function(sourceObj){
+			for(var key in sourceObj){
+				targetObj[key]=sourceObj[key];
+			}
+		});
+		return targetObj;
 	};
 	
 // Perform a deep comparison to check if two objects are equal,
@@ -394,7 +397,7 @@
 	};
 	
 // Define the isDate, isFunction, isNumber, isRegExp, and isString functions
-	S.each(['String','Number','Function','Date','RegExp'],function(type){
+	S.each(['String','Number','Boolean','Function','Date','RegExp'],function(type){
 		S['is'+type]=function(obj){
 			return Object.prototype.toString.call(obj)==="[object " + type + "]";
 		};
