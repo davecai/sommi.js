@@ -398,8 +398,8 @@
 /******************Function functions*****************/
 	S.bind = function(fn, thisArg) {
 		var args = S.toArray(arguments).slice(2);
-		if (fn.bind) {
-			return fn.bind.apply(fn, [thisArg].concat(args));
+		if (Function.prototype.bind&&fn.bind===Function.prototype.bind) {
+			return fn.bind([thisArg].concat(args));
 		}
 		return function() {
 			var finalArgs = args.concat(S.toArray(arguments));
