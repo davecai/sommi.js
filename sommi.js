@@ -378,18 +378,11 @@
 	};
 
 	S.isUndefined=function(obj){
-		return typeof obj==="undefined";
+		return obj===void 0;
 	};
 
 	S.isNaN=function(obj){
 		return S.isNumber(obj)&&isNaN(obj);
-	};
-	
-// Object.prototype.propertyIsEnumerable can determine whether the specified property in an object can be enumerated 
-//by a for...in loop, except the properties inherited through the prototype chain.
-//S.isArguments is used to determine whether the parameter is an arguments object
-	S.isArguments=function(obj){
-		return obj&&S.isNumber(obj.length)&&!S.isArray(obj) &&!S.isString(obj)&&!S.isFunction(obj)&&!Object.prototype.propertyIsEnumerable.call(obj,"length");
 	};
 	
 	S.isArray=Array.isArray||function(obj){
@@ -397,7 +390,7 @@
 	};
 	
 // Define the isDate, isFunction, isNumber, isRegExp, and isString functions
-	S.each(['String','Number','Boolean','Function','Date','RegExp'],function(type){
+	S.each(['String','Number','Boolean','Function','Date','RegExp','Arguments'],function(type){
 		S['is'+type]=function(obj){
 			return Object.prototype.toString.call(obj)==="[object " + type + "]";
 		};
