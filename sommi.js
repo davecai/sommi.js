@@ -363,7 +363,7 @@
 		var aKeys=S.keys(a),bKeys=S.keys(b);
 		if(aKeys.length!==bKeys.length) return false;
 		for(var key in a){
-			if(!S.isEqual(a[key],b[key]))  return false;
+			if(!(key in b) || !S.isEqual(a[key],b[key]))  return false;
 		}
 		return true;
 	};
