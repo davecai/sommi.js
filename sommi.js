@@ -63,9 +63,9 @@
 		});
 	};
 
-	S.reduce = function(collection, memoValue, fn, thisArg) {
+	S.reduce = function(collection, fn, memoValue, thisArg) {
 		if (Array.prototype.reduce&&collection.reduce===Array.prototype.reduce) {
-			return collection.reduce(S.bind(fn, thisArg), memoValue);
+			return collection.reduce(S.bind(fn, thisArg||globalObj), memoValue);
 		}
 		S.each(collection, function(value, index, obj) {
 			memoValue = fn.call(thisArg, memoValue, value, index, obj);
@@ -73,12 +73,12 @@
 		return memoValue;
 	};
 
-	S.reduceRight = function(collection, memoValue, fn, thisArg) {
-		if (Array.prototype.reduceRight===collection.reduceRight===Array.prototype.reduceRight) {
-			return collection.reduceRight(_.bind(fn, thisArg), memoValue);
+	S.reduceRight = function(collection, fn, memoValue, thisArg) {
+		if (Array.prototype.reduceRight&&collection.reduceRight===Array.prototype.reduceRight) {
+			return collection.reduceRight(_.bind(fn, thisArg||globalObj), memoValue);
 		}
 		var list = S.toArray(collection).reverse();
-		return S.reduce(list, memoValue, fn, thisArg);
+		return S.reduce(list, fn, memoValue, thisArg);
 	};
 	
 // Return the first value which passes a truth test.
