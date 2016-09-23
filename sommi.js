@@ -3,12 +3,20 @@
 /*************architecture  part***************/
 	var globalObj = this;
 	var originalS = globalObj.S;
-	var S = globalObj.S = function(obj) {
+	var S = function(obj) {
 		return new Sommi(obj);
 	}
 
-//export the S object for CommonJS
-	if(typeof exports!=="undefined") exports.S=S;
+//export the S object for CommonJS,with
+// backwards-compatibility for their old module API
+  if (typeof exports != 'undefined' ) {
+    if (typeof module != 'undefined' && module.exports) {
+      exports = module.exports = S;
+    }
+    exports.S= S;
+  } else {
+    globalObj.S = S;
+  }
 	
 	S.version = "0.1.0";
 	
