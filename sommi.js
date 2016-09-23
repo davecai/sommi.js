@@ -220,13 +220,13 @@
 /*****************Array functions********************/
 // Return a completely flattened version of an array
 	S.flatten=function(array){
-		return S.reduce(array,[],function(memo,currentValue){
+		return S.reduce(array,function(memo,currentValue){
 			if(S.isArray(currentValue)){
 				return memo.concat(S.flatten(currentValue));
 			}
 			memo.push(currentValue);
 			return memo;
-		});
+		},[]);
 	};
 
 // Return a version of the array that does not contain the specified value(s).
@@ -240,12 +240,12 @@
 // Produce a duplicate-free version of the array. If the array has already
 // been sorted, you have the option of using a faster algorithm
 	S.unique=function(array,isSorted){
-		return S.reduce(array,[],function(memo,currentValue,index){
+		return S.reduce(array,function(memo,currentValue,index){
 			if(index===0||(isSorted===true?memo[memo.length-1]!==currentValue:!S.contains(memo,currentValue))) {
 				memo.push(currentValue);
 			}
 			return memo;
-		});
+		},[]);
 	};
 
 // Produce an array that contains every item shared between all the
