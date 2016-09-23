@@ -328,8 +328,7 @@
 	
 // Create a (shallow-cloned) duplicate of an object
 	S.clone=function(obj){
-		if(S.isArray(obj)) return obj.slice(0);
-		return S.extend({},obj);
+		return S.isArray(obj) ? obj.slice() : S.extend({},obj);
 	};
 	
 // Extend a given object with all of the properties in passed-in objects
