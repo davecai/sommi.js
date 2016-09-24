@@ -72,22 +72,31 @@
 	};
 
 	S.reduce = function(collection, fn, memoValue, thisArg) {
+		var hasInitialMemoValue=memoValue!== void 0;
 		if (Array.prototype.reduce&&collection.reduce===Array.prototype.reduce) {
-			return collection.reduce(S.bind(fn, thisArg||globalObj), memoValue);
+			if(thisArg) fn=S.bind(fn,thisArg);
+			return hasInitialMemoValue?collection.reduce(fn, memoValue):collection.reduce(fn);
 		}
 		S.each(collection, function(value, index, obj) {
-			memoValue = fn.call(thisArg, memoValue, value, index, obj);
+			if(!hasInitialMemoValue&&index===0){
+				memoValue=value;
+			}
+			else {
+				memoValue = fn.call(thisArg, memoValue, value, index, obj);
+			}
 		});
 		return memoValue;
 	};
 
 	S.reduceRight = function(collection, fn, memoValue, thisArg) {
 		if (Array.prototype.reduceRight&&collection.reduceRight===Array.prototype.reduceRight) {
-			return collection.reduceRight(_.bind(fn, thisArg||globalObj), memoValue);
+			if(thisArg) fn=S.bind(fn,thisArg);
+			return memoValue!==void 0 ? collection.reduceRight(fn, memoValue):collection.reduceRight(fn);
 		}
 		var list = S.toArray(collection).reverse();
 		return S.reduce(list, fn, memoValue, thisArg);
 	};
+
 	
 // Return the first value which passes a truth test.
 	S.find = function(collection, fn, thisArg) {
