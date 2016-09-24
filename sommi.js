@@ -426,6 +426,18 @@
 			return fn.apply(null,args);
 		},0);
 	};
+	
+// Returns a function that will be executed at most one time, no matter how
+// often you call it. Useful for lazy initialization
+  S.once=function(fn){
+  	var executed=false,memoValue;
+  	return function(){
+  		if(executed) return memoValue;
+  		executed=true;
+  		return memoValue=fn.apply(null,arguments);
+  	};
+  };
+
 
 /********************Utility functions******************/
 
