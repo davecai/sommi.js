@@ -409,12 +409,12 @@
 	
 /******************Function functions*****************/
 	S.bind = function(fn, thisArg) {
-		var args = S.toArray(arguments).slice(2);
 		if (Function.prototype.bind&&fn.bind===Function.prototype.bind) {
-			return fn.bind([thisArg].concat(args));
+			return fn.bind.apply(fn,Array.prototype.slice.call(arguments,1));
 		}
+		var args=Array.prototype.slice.call(arguments,2);
 		return function() {
-			var finalArgs = args.concat(S.toArray(arguments));
+			var finalArgs = args.concat(Array.prototype.slice.call(arguments));
 			return fn.apply(thisArg, finalArgs);
 		};
 	};
