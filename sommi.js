@@ -1,5 +1,10 @@
+// Sommi.js 1.0.0
+//Date:2016/09/24
+//Author: Cai Zhen
+// Sommi.js is freely distributable under the MIT license.
+//Portions of Sommi.js are inspired or borrowed from underscore.js
+
 !function() {
-	
 /*************architecture  part***************/
 	var globalObj = this,
 	    originalS = globalObj.S,
@@ -313,6 +318,20 @@
 			if(array[index]===value) return index;
 		}
 		return -1;
+	};
+	
+// Shuffle an array.
+	S.shuffle=function(array){
+		var shuffled=new Array,random;
+		S.each(array,function(value,index){
+			if(index==0) shuffled[0]=value;
+			else{
+				random=Math.floor(Math.random()*(index+1));
+				shuffled[index]=shuffled[random];
+				shuffled[random]=value;
+			}
+		});
+		return shuffled;
 	};
 	
 /*****************Object functions*******************/
