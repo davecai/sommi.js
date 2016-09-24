@@ -218,7 +218,7 @@
 	S.toArray = function(collection) {
 		if (!collection) return [];
 		else if (S.isArray(collection)) {
-			return collection;
+			return collection.slice();
 		}
 		else if(S.isArguments(collection)){
 			return Array.prototype.slice.call(collection);
