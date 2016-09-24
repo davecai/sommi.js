@@ -143,10 +143,11 @@
 
 // Determine whether at least one value in the collection passes a truth test.
 	S.some=function(collection,fn,thisArg){
+		var booleanResult=false;
+		if(collection==null) return booleanResult;
 		if(Array.prototype.some&&collection.some===Array.prototype.some){
 			return collection.some(fn,thisArg);
 		}
-		var booleanResult=false;
 		S.each(collection,function(value,index,obj){
 			if(fn.call(thisArg,value,index,obj)){
 				booleanResult=true;
