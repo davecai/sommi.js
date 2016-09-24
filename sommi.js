@@ -1,8 +1,9 @@
 !function() {
 	
 /*************architecture  part***************/
-	var globalObj = this;
-	var originalS = globalObj.S;
+	var globalObj = this,
+	    originalS = globalObj.S,
+	    breaker={};
 	var S = function(obj) {
 		return new Sommi(obj);
 	}
@@ -29,27 +30,19 @@
 
 /*****************Collection functions********************/
 	S.each = function(collection, fn, thisArg) {
-		//try-catch used for breaking loop
-		try {
-			if (Array.prototype.forEach&&collection.forEach===Array.prototype.forEach) {
-				collection.forEach(fn, thisArg);
-			} else if(S.isNumber(collection.length)) {
-				for (var i = 0, len = collection.length; i < len; i++) {
-					fn.call(thisArg, collection[i], i, collection);
+				if (Array.prototype.forEach&&collection.forEach===Array.prototype.forEach) {
+					collection.forEach(fn, thisArg);
+				} else if(S.isArray(collection)||S.isArguments(collection)) {
+					for (var i = 0, len = collection.length; i < len; i++) {
+						if(fn.call(thisArg, collection[i], i, collection)===breaker)  return;
+					}
+				}
+			 	else {
+					var keys=S.keys(collection),len=keys.length;
+					for (var i=0;i<len;i++) {
+						if(fn.call(thisArg, collection[keys[i]], keys[i], collection)===breaker)  return;
 				}
 			}
-			else {
-				var keys=S.keys(collection),len=keys.length;
-				for (var i=0;i<len;i++) {
-					fn.call(thisArg, collection[keys[i]], keys[i], collection);
-				}
-			}
-		} catch (error) {
-			if (error !== "break") {
-				throw error;
-			}
-		}
-
 	};
 
 	S.map = function(collection, fn, thisArg) {
