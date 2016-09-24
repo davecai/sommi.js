@@ -133,7 +133,7 @@
 		S.each(collection,function(value,index,obj){
 			if(!fn.call(thisArg,value,index,obj)){
 				booleanResult=false;
-				S.breakLoop();
+				return breaker;
 			}
 		});
 		return booleanResult;
