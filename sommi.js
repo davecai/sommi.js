@@ -97,7 +97,7 @@
 		S.each(collection, function(value, index, obj) {
 			if (fn.call(thisArg, value, index, obj)) {
 				result = value;
-				S.breakLoop();
+				return breaker;
 			}
 		});
 		return result;
@@ -148,7 +148,7 @@
 		S.each(collection,function(value,index,obj){
 			if(fn.call(thisArg,value,index,obj)){
 				booleanResult=true;
-				S.breakLoop();
+				return breaker;
 			}
 		});
 		return booleanResult;
@@ -162,7 +162,7 @@
 		var booleanResult=false;
 		S.each(collection,function(value,index,obj){
 			if(booleanResult= value===target){
-				S.breakLoop();
+				return breaker;
 			}
 		});
 		return booleanResult;
