@@ -15,7 +15,13 @@
       exports = module.exports = S;
     }
     exports.S= S;
-  } else {
+  } 
+  else if(typeof define==='function'&&define.amd){
+  	define(function(){
+  		return S;
+  	});
+  }
+  else {
     globalObj['S']= S;
   }
 	
