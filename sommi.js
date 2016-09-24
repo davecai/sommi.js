@@ -239,10 +239,10 @@
 
 /*****************Array functions********************/
 // Return a completely flattened version of an array
-	S.flatten=function(array){
+	S.flatten=function(array,shallow){
 		return S.reduce(array,function(memo,currentValue){
 			if(S.isArray(currentValue)){
-				return memo.concat(S.flatten(currentValue));
+				return memo.concat(shallow?currentValue:S.flatten(currentValue));
 			}
 			memo.push(currentValue);
 			return memo;
