@@ -309,11 +309,12 @@
 	
 /*****************Object functions*******************/
 	S.keys=Object.keys||function(obj){
+		if (obj !== Object(obj)) throw new TypeError('Invalid object');
 		var result=new Array();
 		if(S.isArray(obj)){
 			var i,len=obj.length;
 			for(i=0;i<len;i++){
-				result.push(i);
+				result.push(String(i));
 			}
 			return result;
 		}
