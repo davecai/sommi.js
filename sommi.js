@@ -16,7 +16,7 @@
     }
     exports.S= S;
   } else {
-    globalObj.S = S;
+    globalObj['S']= S;
   }
 	
 	S.version = "1.0.0";
@@ -73,8 +73,9 @@
 			return hasInitialMemoValue?collection.reduce(fn, memoValue):collection.reduce(fn);
 		}
 		S.each(collection, function(value, index, obj) {
-			if(!hasInitialMemoValue&&index===0){
+			if(!hasInitialMemoValue){
 				memoValue=value;
+				hasInitialMemoValue=true;
 			}
 			else {
 				memoValue = fn.call(thisArg, memoValue, value, index, obj);
