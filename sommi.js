@@ -10,8 +10,8 @@
 
 //export the S object for CommonJS,with
 // backwards-compatibility for their old module API
-  if (typeof exports != 'undefined' ) {
-    if (typeof module != 'undefined' && module.exports) {
+  if (typeof exports !== 'undefined' ) {
+    if (typeof module !== 'undefined' && module.exports) {
       exports = module.exports = S;
     }
     exports.S= S;
@@ -19,7 +19,7 @@
     globalObj.S = S;
   }
 	
-	S.version = "0.1.0";
+	S.version = "1.0.0";
 	
 /*******************Internal functions*****************/
 	var isArrayLike = function(obj) {
@@ -30,6 +30,7 @@
 
 /*****************Collection functions********************/
 	S.each = function(collection, fn, thisArg) {
+				if(collection==null) return;
 				if (Array.prototype.forEach&&collection.forEach===Array.prototype.forEach) {
 					collection.forEach(fn, thisArg);
 				} else if(S.isArray(collection)||S.isArguments(collection)) {
@@ -46,13 +47,14 @@
 	};
 
 	S.map = function(collection, fn, thisArg) {
+		var result = new Array();
+		if(collection==null) return result;
 		if (Array.prototype.map&&collection.map===Array.prototype.map) {
 			return collection.map(fn, thisArg);
 		}
-		var result = new Array();
 		S.each(collection, function(value, index, obj) {
 			result.push(fn.call(thisArg, value, index, obj));
-		}, thisArg);
+		});
 		return result;
 	};
 
