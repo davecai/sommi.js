@@ -349,6 +349,7 @@
 	
 // Create a (shallow-cloned) duplicate of an object
 	S.clone=function(obj){
+		if(!S.isObject(obj)) return obj;
 		return S.isArray(obj) ? obj.slice() : S.extend({},obj);
 	};
 	
@@ -410,7 +411,7 @@
 	};
 	
 // Define the isDate, isFunction, isNumber, isRegExp, and isString functions
-	S.each(['String','Number','Boolean','Function','Date','RegExp','Arguments'],function(type){
+	S.each(['String','Number','Boolean','Function','Object','Date','RegExp','Arguments'],function(type){
 		S['is'+type]=function(obj){
 			return Object.prototype.toString.call(obj)==="[object " + type + "]";
 		};
