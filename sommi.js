@@ -426,9 +426,6 @@
 	};
 
 /********************Utility functions******************/
-	S.breakLoop=function(){
-		throw "break";
-	};
 
 	S.noConflict=function(){
 		globalObj.S=originalS;
